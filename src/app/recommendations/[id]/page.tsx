@@ -1,4 +1,4 @@
-import { db } from '@/lib/firebase';
+import { firestore } from '@/lib/firebase-client';
 import { doc, getDoc } from 'firebase/firestore';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -32,7 +32,7 @@ interface Recommendation {
 // Server function to fetch data from Firestore
 async function getRecommendation(id: string): Promise<Recommendation | null> {
   try {
-    const docRef = doc(db, 'prepared_contents', id);
+    const docRef = doc(firestore, 'prepared_contents', id);
     const docSnap = await getDoc(docRef);
 
     if (!docSnap.exists()) {
