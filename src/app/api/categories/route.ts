@@ -1,21 +1,17 @@
 import { NextResponse } from 'next/server';
-import { getFirestore, collection, query, getDocs, where, or } from 'firebase/firestore';
-import { initializeFirebase } from '@/lib/firebase';
+import { db } from '@/lib/firebase-admin';
 
 export async function GET() {
   try {
     console.log('[/api/categories] Fetching categories...');
-    // Firebase 초기화
-    const { db } = initializeFirebase();
     
-    // published된 문서들 중에서 카테고리만 고유하게 조회
-    const q = query(
-      collection(db, 'prepared_contents'),
-      where('is_published', '==', true)
-    );
-    
+    // firebase-admin의 쿼리 실행
     console.log('[/api/categories] Executing Firestore query...');
-    const snapshot = await getDocs(q);
+    const snapshot = await db
+      .collection('prepared_contents')
+      .where('is_published', '==', true)
+      .get();
+      
     console.log(`[/api/categories] Found ${snapshot.size} documents`);
     
     // 모든 문서에서 카테고리 수집

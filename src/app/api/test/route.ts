@@ -1,18 +1,15 @@
 import { NextResponse } from 'next/server';
-import { initializeFirebase } from '@/lib/firebase';
+import { db } from '@/lib/firebase-admin';
 
 export async function GET() {
   try {
-    // Firebase 초기화
-    const app = initializeFirebase();
+    // Firebase Admin SDK 사용 확인을 위해 간단한 쿼리 실행
+    const snapshot = await db.collection('test').limit(1).get();
     
     return NextResponse.json({
       success: true,
-      message: 'Firebase 초기화 성공',
-      app: {
-        name: app.name,
-        options: app.options
-      }
+      message: 'Firebase Admin SDK가 정상적으로 작동 중입니다',
+      testDocuments: snapshot.size
     });
   } catch (error: any) {
     console.error('Test API Error:', {

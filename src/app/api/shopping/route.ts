@@ -1,8 +1,5 @@
 import { NextResponse } from 'next/server';
-import { initializeFirebase } from '@/lib/firebase';
-
-// Firebase 초기화
-initializeFirebase();
+import { db } from '@/lib/firebase-admin';
 
 export async function GET(request: Request) {
   try {

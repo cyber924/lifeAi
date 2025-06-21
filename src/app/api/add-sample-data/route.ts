@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/firebase';
-import { collection, addDoc, Timestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase-admin';
+import { Timestamp } from 'firebase-admin/firestore';
 
 export async function GET() {
   try {
@@ -29,7 +29,7 @@ export async function GET() {
     };
 
     console.log('[add-sample-data] Data to be added:', sampleData);
-    const docRef = await addDoc(collection(db, 'prepared_contents'), sampleData);
+    const docRef = await db.collection('prepared_contents').add(sampleData);
     console.log('[add-sample-data] addDoc successful, document ID:', docRef.id);
 
     return NextResponse.json({

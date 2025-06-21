@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/firebase';
-import { collection, addDoc, Timestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase-admin';
+import { Timestamp } from 'firebase-admin/firestore';
 
 export async function GET() {
   try {
@@ -26,7 +26,7 @@ export async function GET() {
       }
     };
 
-    const docRef = await addDoc(collection(db, 'prepared_contents'), sampleData);
+    const docRef = await db.collection('prepared_contents').add(sampleData);
 
     return NextResponse.json({
       message: '명소 샘플 데이터가 성공적으로 추가되었습니다.',

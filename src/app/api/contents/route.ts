@@ -1,12 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getContents, GetContentsOptions } from '@/services/contentService';
-import { initializeFirebase } from '@/lib/firebase';
-
-// Firebase 초기화 확인 (개발 모드에서만 초기화)
-if (process.env.NODE_ENV !== 'production' && !global._firebaseInitialized) {
-  initializeFirebase();
-  global._firebaseInitialized = true;
-}
+// Firebase Admin SDK는 자동으로 초기화되므로 별도 초기화 불필요
 
 // 요청 파라미터 타입 정의
 interface ContentsRequestParams {
