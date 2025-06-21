@@ -156,28 +156,70 @@ export const incrementViewCount = async (id: string): Promise<void> => {
   // });
 };
 
-export const toggleLike = async (id: string, userId: string) => {
+export async function toggleLike(id: string, userId: string) {
+  // TODO: Implement like functionality
   console.log(`Like toggled for content: ${id} by user: ${userId}`);
-  // TODO: 좋아요 토글 로직 구현 (Firestore 트랜잭션 사용 권장)
-  // const docRef = db.collection('prepared_contents').doc(id);
-  // await db.runTransaction(async (transaction) => {
-  //   const doc = await transaction.get(docRef);
-  //   if (!doc.exists) {
-  //     throw new Error('Document does not exist!');
-  //   }
-  //   
-  //   const likes = doc.data()?.likes || [];
-  //   const userIndex = likes.indexOf(userId);
-  //   
-  //   if (userIndex === -1) {
-  //     likes.push(userId);
-  //   } else {
-  //     likes.splice(userIndex, 1);
-  //   }
-  //   
-  //   transaction.update(docRef, { likes });
-  // });
-  
-  // return { success: true };
   return { likeCount: 0, isLiked: false };
-};
+}
+
+// 컨텐츠 목록 조회 옵션
+export interface GetContentsOptions {
+  limit?: number;
+  category?: string;
+  orderBy?: string;
+  orderDirection?: 'asc' | 'desc';
+}
+
+// 컨텐츠 목록 조회
+export async function getContents(options: GetContentsOptions = {}) {
+  const { 
+    limit = 10, 
+    category, 
+    orderBy = 'createdAt', 
+    orderDirection = 'desc' 
+  } = options;
+  
+  let query = db
+    .collection('prepared_contents')
+    .where('is_published', '==', true)
+    .orderBy(orderBy, orderDirection)
+    .limit(limit);
+
+  if (category) {
+    query = query.where('category', '==', category);
+  }
+
+  const snapshot = await query.get();
+  
+  return snapshot.docs.map(doc => {
+    const base = extractBaseFields(doc);
+    const data = doc.data();
+    
+    // 카테고리별로 다른 필드 반환
+    switch (base.category) {
+      case '숙소':
+        return {
+          ...base,
+          price: Number(data.price) || 0,
+          location: data.location || '',
+          rating: Number(data.rating) || 0
+        };
+      case '명소':
+        return {
+          ...base,
+          address: data.address || '',
+          admissionFee: Number(data.admissionFee) || 0,
+          openingHours: data.openingHours || ''
+        };
+      case '쇼핑':
+        return {
+          ...base,
+          price: Number(data.price) || 0,
+          brand: data.brand || '',
+          discountRate: Number(data.discountRate) || 0
+        };
+      default:
+        return base;
+    }
+  });
+}
