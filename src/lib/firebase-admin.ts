@@ -86,7 +86,11 @@ const getFirestoreDb = (): admin.firestore.Firestore => {
   return globalWithFirebase[FIRESTORE_DB_KEY]!;
 };
 
-// 기본 Firestore 인스턴스 (기존 코드와의 호환성을 위해 유지)
-const db = getFirestoreDb();
+// 기본 Firestore 인스턴스 (API Routes에서 사용)
+export const db = getFirestoreDb();
 
-export { db, getFirebaseAdmin, getFirestoreDb };
+// 유틸리티 함수들도 함께 내보내기 (필요한 경우 사용)
+export { getFirebaseAdmin, getFirestoreDb };
+
+// 기본 내보내기로 db 제공 (기존 코드와의 호환성을 위해 유지)
+export default db;

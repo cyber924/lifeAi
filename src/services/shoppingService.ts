@@ -1,6 +1,9 @@
-import { collection, getDocs, query, where, orderBy, limit, startAfter, DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getFirestore, collection, getDocs, query, where, orderBy, limit, startAfter, DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
+import { firestore } from '@/lib/firebase-client';
 import { Product, Category } from '@/types/shopping';
+
+// Use the client-side Firestore instance
+const db = firestore;
 
 const PRODUCTS_COLLECTION = 'products';
 const CATEGORIES_COLLECTION = 'categories';
