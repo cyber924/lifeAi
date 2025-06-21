@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seed Products to Firestore</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 10px 0;
+    }
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+    #status {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 4px;
+    }
+    .success {
+      background-color: #dff0d8;
+      color: #3c763d;
+    }
+    .error {
+      background-color: #f2dede;
+      color: #a94442;
+    }
+  </style>
+</head>
+<body>
+  <h1>Firestore에 상품 데이터 추가하기</h1>
+  <button id="seedButton">상품 데이터 추가 시작</button>
+  <div id="status"></div>
+
+  <script>
+    // Firebase 구성
+    const firebaseConfig = {
+      apiKey: "AIzaSyDHyW3cefOdffli-qKAC6g7ddlih5-G9qE",
+      authDomain: "lifeai-project.firebaseapp.com",
+      projectId: "lifeai-project",
+      storageBucket: "lifeai-project.appspot.com",
+      messagingSenderId: "454714591394",
+      appId: "1:454714591394:web:91719a5a54fbe1403beffb"
+    };
+
+    // Firebase 초기화
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // 상품 데이터 (shopping.ts에서 가져옴)
+    const products = [
+      {
+        id: 'prod_1',
+        name: '스마트폰 삼성 1001',
+        price: 1250000,
+        originalPrice: 1500000,
+        discountRate: 17,
+        imageUrl: 'https://picsum.photos/seed/product-1/800/800',
+        rating: 4.2,
+        reviewCount: 342,
+        category: '스마트폰',
+        isFreeShipping: true,
+        isNew: true,
+        isBest: false,
+        description: '삼성의 최신 플래그십 스마트폰으로 뛰어난 카메라 성능을 자랑합니다.',
+        brand: '삼성'
+      },
+      {
+        id: 'prod_2',
+        name: '노트북 LG 그램',
+        price: 1590000,
+        originalPrice: 1790000,
+        discountRate: 11,
+        imageUrl: 'https://picsum.photos/seed/product-2/800/800',
+        rating: 4.5,
+        reviewCount: 128,
+        category: '노트북/태블릿',
+        isFreeShipping: true,
+        isNew: false,
+        isBest: true,
+        description: '가벼운 무게와 강력한 성능을 동시에 갖춘 LG 그램 노트북',
+        brand: 'LG'
+      },
+      {
+        id: 'prod_3',
+        name: '무선 이어폰 소니',
+        price: 259000,
+        originalPrice: 299000,
+        discountRate: 13,
+        imageUrl: 'https://picsum.photos/seed/product-3/800/800',
+        rating: 4.7,
+        reviewCount: 89,
+        category: '이어폰/헤드폰',
+        isFreeShipping: true,
+        isNew: true,
+        isBest: true,
+        description: '탁월한 노이즈 캔슬링 기능의 프리미엄 무선 이어폰',
+        brand: '소니'
+      },
+      {
+        id: 'prod_4',
+        name: '스마트워치 애플워치',
+        price: 599000,
+        originalPrice: 659000,
+        discountRate: 9,
+        imageUrl: 'https://picsum.photos/seed/product-4/800/800',
+        rating: 4.8,
+        reviewCount: 210,
+        category: '스마트워치',
+        isFreeShipping: true,
+        isNew: false,
+        isBest: true,
+        description: '건강 모니터링이 가능한 최신 애플워치',
+        brand: '애플'
+      },
+      {
+        id: 'prod_5',
+        name: '스마트폰 갤럭시 Z플립',
+        price: 1399000,
+        originalPrice: 1599000,
+        discountRate: 13,
+        imageUrl: 'https://picsum.photos/seed/product-5/800/800',
+        rating: 4.6,
+        reviewCount: 178,
+        category: '스마트폰',
+        isFreeShipping: true,
+        isNew: true,
+        isBest: true,
+        description: '접히는 디자인의 혁신적인 폴더블 스마트폰',
+        brand: '삼성'
+      },
+      {
+        id: 'prod_6',
+        name: '태블릿 아이패드 프로',
+        price: 1249000,
+        originalPrice: 1349000,
+        discountRate: 7,
+        imageUrl: 'https://picsum.photos/seed/product-6/800/800',
+        rating: 4.9,
+        reviewCount: 95,
+        category: '노트북/태블릿',
+        isFreeShipping: true,
+        isNew: true,
+        isBest: false,
+        description: '프로급 성능의 애플 태블릿',
+        brand: '애플'
+      },
+      {
+        id: 'prod_7',
+        name: '무선 헤드폰 보스',
+        price: 399000,
+        originalPrice: 459000,
+        discountRate: 13,
+        imageUrl: 'https://picsum.photos/seed/product-7/800/800',
+        rating: 4.7,
+        reviewCount: 143,
+        category: '이어폰/헤드폰',
+        isFreeShipping: true,
+        isNew: false,
+        isBest: true,
+        description: '탁월한 사운드 퀄리티의 노이즈 캔슬링 헤드폰',
+        brand: '보스'
+      },
+      {
+        id: 'prod_8',
+        name: '스마트워치 갤럭시 워치',
+        price: 329000,
+        originalPrice: 359000,
+        discountRate: 8,
+        imageUrl: 'https://picsum.photos/seed/product-8/800/800',
+        rating: 4.5,
+        reviewCount: 87,
+        category: '스마트워치',
+        isFreeShipping: true,
+        isNew: true,
+        isBest: false,
+        description: '삼성 갤럭시와 완벽한 호환성을 자랑하는 스마트워치',
+        brand: '삼성'
+      },
+      {
+        id: 'prod_9',
+        name: '무선 충전기',
+        price: 45000,
+        originalPrice: 59000,
+        discountRate: 24,
+        imageUrl: 'https://picsum.photos/seed/product-9/800/800',
+        rating: 4.3,
+        reviewCount: 210,
+        category: '충전기/케이블',
+        isFreeShipping: true,
+        isNew: false,
+        isBest: true,
+        description: '고속 무선 충전이 가능한 범용 충전기',
+        brand: '삼성'
+      },
+      {
+        id: 'prod_10',
+        name: '블루투스 스피커',
+        price: 159000,
+        originalPrice: 199000,
+        discountRate: 20,
+        imageUrl: 'https://picsum.photos/seed/product-10/800/800',
+        rating: 4.6,
+        reviewCount: 76,
+        category: '액세서리',
+        isFreeShipping: true,
+        isNew: true,
+        isBest: false,
+        description: '강력한 사운드를 자랑하는 휴대용 블루투스 스피커',
+        brand: '소니'
+      },
+      {
+        id: 'prod_11',
+        name: '태블릿 갤럭시 탭',
+        price: 899000,
+        originalPrice: 999000,
+        discountRate: 10,
+        imageUrl: 'https://picsum.photos/seed/product-11/800/800',
+        rating: 4.4,
+        reviewCount: 92,
+        category: '노트북/태블릿',
+        isFreeShipping: true,
+        isNew: false,
+        isBest: true,
+        description: '삼성의 강력한 성능의 안드로이드 태블릿',
+        brand: '삼성'
+      },
+      {
+        id: 'prod_12',
+        name: '무선 이어버드',
+        price: 189000,
+        originalPrice: 229000,
+        discountRate: 17,
+        imageUrl: 'https://picsum.photos/seed/product-12/800/800',
+        rating: 4.2,
+        reviewCount: 156,
+        category: '이어폰/헤드폰',
+        isFreeShipping: true,
+        isNew: true,
+        isBest: false,
+        description: '편안한 착용감의 무선 이어버드',
+        brand: '샤오미'
+      }
+    ];
+
+    // 상태 업데이트 함수
+    function updateStatus(message, isError = false) {
+      const statusDiv = document.getElementById('status');
+      statusDiv.textContent = message;
+      statusDiv.className = isError ? 'error' : 'success';
+      console.log(message);
+    }
+
+    // 데이터 추가 함수
+    async function seedProducts() {
+      const button = document.getElementById('seedButton');
+      button.disabled = true;
+      updateStatus('상품 데이터 추가를 시작합니다...');
+
+      try {
+        const batch = db.batch();
+        const productsRef = db.collection('products');
+        
+        // 기존 데이터 삭제
+        const snapshot = await productsRef.get();
+        snapshot.docs.forEach(doc => {
+          batch.delete(doc.ref);
+        });
+        await batch.commit();
+        
+        // 새 데이터 추가
+        const addBatch = db.batch();
+        products.forEach(product => {
+          const productRef = productsRef.doc(product.id);
+          addBatch.set(productRef, {
+            ...product,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          });
+        });
+        
+        await addBatch.commit();
+        updateStatus(`성공적으로 ${products.length}개의 상품을 추가했습니다!`);
+      } catch (error) {
+        console.error('Error:', error);
+        updateStatus(`오류 발생: ${error.message}`, true);
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    // 버튼 클릭 이벤트 리스너
+    document.getElementById('seedButton').addEventListener('click', seedProducts);
+  </script>
+</body>
+</html>

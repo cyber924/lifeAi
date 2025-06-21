@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: 79, 70, 229; /* indigo-600 */
+    --color-primary-hover: 67, 56, 202; /* indigo-700 */
+  }
+  
+  body {
+    @apply bg-gray-50 text-gray-900 antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold text-gray-900 tracking-tight;
+  }
+  
+  h1 { @apply text-3xl sm:text-4xl md:text-5xl; }
+  h2 { @apply text-2xl sm:text-3xl; }
+  h3 { @apply text-xl sm:text-2xl; }
+  h4 { @apply text-lg sm:text-xl; }
+  
+  a {
+    @apply text-indigo-600 hover:text-indigo-700 transition-colors outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded;
+  }
+  
+  button, [role="button"] {
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-md;
+  }
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Swiper 커스텀 스타일 */
+.swiper-button-next,
+.swiper-button-prev {
+  color: rgb(var(--color-primary)) !important;
+  @apply transition-opacity hover:opacity-80;
+}
+
+.swiper-pagination-bullet-active {
+  background: rgb(var(--color-primary)) !important;
+}
+
+/* 커스텀 스크롤바 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full hover:bg-gray-400 transition-colors;
+}
+
+/* Remove input number arrows */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
