@@ -5,7 +5,7 @@ import { useRouter, useSearchParams, useSearchParams as useSearchParamsNext } fr
 import { XMarkIcon, ArrowPathIcon, ExclamationTriangleIcon, ShoppingBagIcon, FunnelIcon, AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
 import { ErrorBoundary } from 'react-error-boundary';
 import { collection, query, where, orderBy, limit, getDocs, DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { firestore } from '@/lib/firebase';
 import { Product, Category, FilterOptions } from '@/types/shopping';
 import { useCart } from '@/context/CartContext';
 import { toast } from 'react-hot-toast';
@@ -195,7 +195,7 @@ function ShoppingPage() {
       setError(null);
       console.log('상품 데이터를 불러오는 중...');
       
-      const productsRef = collection(db, 'products');
+      const productsRef = collection(firestore, 'products');
       // isActive 필터 제거 (모든 상품 조회)
       const q = query(productsRef);
       const querySnapshot = await getDocs(q);
@@ -239,7 +239,7 @@ function ShoppingPage() {
     if (!isClient) return;
     
     try {
-      const categoriesRef = collection(db, 'categories');
+      const categoriesRef = collection(firestore, 'categories');
       const q = query(categoriesRef, orderBy('order', 'asc'));
       const querySnapshot = await getDocs(q);
       

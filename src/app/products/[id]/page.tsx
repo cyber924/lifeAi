@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { doc, getDoc, collection, query, where, limit, getDocs } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { firestore } from '@/lib/firebase';
 import { Product } from '@/types/shopping';
 import { StarIcon, HeartIcon, ArrowLeftIcon, ShoppingCartIcon, TruckIcon, ShieldCheckIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid, StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
@@ -29,7 +29,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const productRef = doc(db, 'products', productId);
+        const productRef = doc(firestore, 'products', productId);
         const productSnap = await getDoc(productRef);
         
         if (!productSnap.exists()) {
@@ -42,7 +42,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         // 관련 상품 가져오기 (동일 카테고리 상품 중 최대 4개)
         if (productData.category) {
           const relatedQuery = query(
-            collection(db, 'products'),
+            collection(firestore, 'products'),
             where('category', '==', productData.category),
             where('__name__', '!=', productId),
             limit(4)
